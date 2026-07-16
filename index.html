@@ -1,111 +1,402 @@
-<!DOCTYPE html>
+[16/07/2026 17:23] Célia Nkinda: <!DOCTYPE html>
 <html lang="fr">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Distributeur de boissons</title>
+<title>Café Express</title>
 
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
-    margin: 0;
-    padding: 0;
-    text-align: center;
+
+*{
+box-sizing:border-box;
+font-family:Arial, sans-serif;
 }
 
-.container {
-    max-width: 400px;
-    margin: 40px auto;
-    background: white;
-    padding: 25px;
-    border-radius: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+body{
+margin:0;
+background:#f3eee8;
+color:#3b2418;
 }
 
-h1 {
-    color: #4b2e1f;
+
+.header{
+background:#4b2e1f;
+color:white;
+padding:25px;
+text-align:center;
+border-radius:0 0 25px 25px;
 }
 
-p {
-    color: #555;
+
+.container{
+max-width:420px;
+margin:25px auto;
+padding:20px;
 }
 
-button {
-    width: 90%;
-    padding: 18px;
-    margin: 12px;
-    border: none;
-    border-radius: 15px;
-    font-size: 18px;
-    cursor: pointer;
-    background: #6f4e37;
-    color: white;
+
+.card{
+background:white;
+padding:25px;
+border-radius:20px;
+box-shadow:0 5px 15px rgba(0,0,0,0.12);
 }
 
-button:hover {
-    background: #4b2e1f;
+
+h2{
+text-align:center;
 }
 
-.footer {
-    margin-top: 25px;
-    font-size: 14px;
-    color: #777;
+
+input{
+
+width:100%;
+padding:15px;
+margin:10px 0;
+border-radius:10px;
+border:1px solid #ccc;
+font-size:16px;
+
 }
+
+
+button{
+
+width:100%;
+padding:16px;
+margin-top:15px;
+border:none;
+border-radius:15px;
+background:#6b4226;
+color:white;
+font-size:18px;
+
+}
+
+
+.boisson{
+
+padding:18px;
+margin:12px 0;
+background:#f8f4ef;
+border-radius:15px;
+font-size:20px;
+cursor:pointer;
+text-align:center;
+
+}
+
+
+.boisson.active{
+
+background:#8b5e3c;
+color:white;
+
+}
+
+
+.resume{
+
+background:#f8f4ef;
+padding:15px;
+border-radius:15px;
+line-height:1.8;
+
+}
+
+
+.etape{
+
+padding:12px;
+margin:10px 0;
+border-radius:10px;
+background:#eee;
+
+}
+
+
+.actif{
+
+background:#8b5e3c;
+color:white;
+
+}
+
+
+.cache{
+
+display:none;
+
+}
+
+
 </style>
 
 </head>
 
+
 <body>
+
+
+<div class="header">
+
+<h1>☕ Café Express</h1>
+
+<p>Votre boisson chaude en quelques secondes</p>
+
+</div>
+
 
 <div class="container">
 
-<h1>☕ Bonjour !</h1>
 
-<p>
-Bienvenue sur votre distributeur de boissons chaudes.
-<br>
-Choisissez simplement votre boisson :
-</p>
+<!-- IDENTIFICATION -->
+
+<div class="card" id="identification">
+
+<h2>👋 Bienvenue</h2>
+
+<p>Veuillez vous identifier</p>
 
 
-<button onclick="commande('Café')">
+<input id="nom" placeholder="Votre nom">
+
+<input id="prenom" placeholder="Votre prénom">
+
+
+<button onclick="continuer()">
+Continuer
+</button>
+
+
+</div>
+
+
+
+<!-- CHOIX -->
+
+<div class="card cache" id="choix">
+
+
+<h2>Choisissez votre boisson</h2>
+
+
+<div class="boisson" onclick="selection('Café',this)">
 ☕ Café
-</button>
+</div>
 
 
-<button onclick="commande('Thé')">
+<div class="boisson" onclick="selection('Thé',this)">
 🍵 Thé
-</button>
+</div>
 
 
-<button onclick="commande('Lait')">
+<div class="boisson" onclick="selection('Lait',this)">
 🥛 Lait
+</div>
+
+
+<button onclick="resume()">
+Voir ma commande
 </button>
+
+
+</div>
+
+
+
+
+<!-- RESUME -->
+
+<div class="card cache" id="resume">
+
+
+<h2>📋 Récapitulatif</h2>
+
+
+<div class="resume" id="details"></div>
+
+
+<button onclick="valider()">
+✅ Confirmer la commande
+</button>
+
+
+<button onclick="retour()">
+Modifier
+</button>
+
+
+</div>
+
+
+
+
+<!-- SUIVI -->
+
+<div class="card cache" id="suivi">
+
+
+<h2>Commande en cours</h2>
+
+
+<h3 id="numero"></h3>
+
+
+<div class="etape actif">
+🟢 Commande reçue
+</div>
+
+
+<div class="etape">
+🟡 Préparation en cours...
+</div>
+
+
+<div class="etape">
+🟢 Boisson prête
+</div>
 
 
 <p id="message"></p>
 
 
-<div class="footer">
-Boisson chaude • Sucre inclus • Merci de votre confiance
 </div>
 
+
 </div>
+
 
 
 <script>
 
-function commande(boisson) {
 
-document.getElementById("message").innerHTML =
-"Votre commande : <b>" + boisson + "</b><br>Préparation en cours... ☕";
+let nom="";
+let prenom="";
+let boisson="";
+let numero=Math.floor(Math.random()*900)+100;
+
+
+
+function continuer(){
+
+nom=document.getElementById("nom").value;
+prenom=document.getElementById("prenom").value;
+
+
+if(nom=="" || prenom==""){
+
+alert("Veuillez remplir vos informations");
+
+return;
 
 }
+
+
+document.getElementById("identification").classList.add("cache");
+document.getElementById("choix").classList.remove("cache");
+
+
+}
+
+
+
+function selection(b,e){
+
+boisson=b;
+
+
+document.querySelectorAll(".boisson")
+.forEach(x=>x.classList.remove("active"));
+
+
+e.classList.add("active");
+
+}
+
+
+
+function resume(){
+
+
+if(boisson==""){
+
+alert("Choisissez une boisson");
+
+return;
+
+}
+
+
+document.getElementById("choix").classList.add("cache");
+
+document.getElementById("resume").classList.remove("cache");
+
+
+document.getElementById("details").innerHTML=
+
+"👤 Client : "+nom+" "+prenom+
+"<br>☕ Boisson : "+boisson+
+"<br>🍬 Sucre : Inclus"+
+"<br>🔥 Température : Chaude";
+
+
+}
+
+
+
+function retour(){
+
+document.getElementById("resume").classList.add("cache");
+
+document.getElementById("choix").classList.remove("cache");
+
+}
+
+
+
+function valider(){
+
+
+document.getElementById("resume").classList.add("cache");
+
+document.getElementById("suivi").classList.remove("cache");
+
+
+document.getElementById("numero").innerHTML=
+"Commande #"+numero+" - "+boisson;
+
+
+setTimeout(()=>{
+
+document.querySelectorAll(".etape")[1]
+.classList.add("actif");
+
+},3000);
+
+
+
+setTimeout(()=>{
+[16/07/2026 17:23] Célia Nkinda: document.querySelectorAll(".etape")[2]
+.classList.add("actif");
+
+
+document.getElementById("message").innerHTML=
+"✅ Votre boisson est prête, veuillez la récupérer.";
+
+},7000);
+
+
+
+}
+
 
 </script>
 
 
 </body>
+
 </html>
