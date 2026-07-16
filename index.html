@@ -1,4 +1,4 @@
-[16/07/2026 17:23] Célia Nkinda: <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 
 <head>
@@ -21,7 +21,6 @@ background:#f3eee8;
 color:#3b2418;
 }
 
-
 .header{
 background:#4b2e1f;
 color:white;
@@ -30,13 +29,11 @@ text-align:center;
 border-radius:0 0 25px 25px;
 }
 
-
 .container{
 max-width:420px;
 margin:25px auto;
 padding:20px;
 }
-
 
 .card{
 background:white;
@@ -45,26 +42,20 @@ border-radius:20px;
 box-shadow:0 5px 15px rgba(0,0,0,0.12);
 }
 
-
 h2{
 text-align:center;
 }
 
-
 input{
-
 width:100%;
 padding:15px;
 margin:10px 0;
 border-radius:10px;
 border:1px solid #ccc;
 font-size:16px;
-
 }
 
-
 button{
-
 width:100%;
 padding:16px;
 margin-top:15px;
@@ -73,12 +64,9 @@ border-radius:15px;
 background:#6b4226;
 color:white;
 font-size:18px;
-
 }
 
-
 .boisson{
-
 padding:18px;
 margin:12px 0;
 background:#f8f4ef;
@@ -86,52 +74,35 @@ border-radius:15px;
 font-size:20px;
 cursor:pointer;
 text-align:center;
-
 }
-
 
 .boisson.active{
-
 background:#8b5e3c;
 color:white;
-
 }
 
-
 .resume{
-
 background:#f8f4ef;
 padding:15px;
 border-radius:15px;
 line-height:1.8;
-
 }
 
-
 .etape{
-
 padding:12px;
 margin:10px 0;
 border-radius:10px;
 background:#eee;
-
 }
-
 
 .actif{
-
 background:#8b5e3c;
 color:white;
-
 }
-
 
 .cache{
-
 display:none;
-
 }
-
 
 </style>
 
@@ -155,77 +126,71 @@ display:none;
 
 <!-- IDENTIFICATION -->
 
-<div class="card" id="identification">
+<div class="card" id="pageIdentification">
 
 <h2>👋 Bienvenue</h2>
 
 <p>Veuillez vous identifier</p>
-
 
 <input id="nom" placeholder="Votre nom">
 
 <input id="prenom" placeholder="Votre prénom">
 
 
-<button onclick="continuer()">
+<button onclick="continuerIdentification()">
 Continuer
 </button>
-
 
 </div>
 
 
 
-<!-- CHOIX -->
+<!-- CHOIX BOISSON -->
 
-<div class="card cache" id="choix">
-
+<div class="card cache" id="pageChoix">
 
 <h2>Choisissez votre boisson</h2>
 
 
-<div class="boisson" onclick="selection('Café',this)">
+<div class="boisson" onclick="choisirBoisson('Café', this)">
 ☕ Café
 </div>
 
 
-<div class="boisson" onclick="selection('Thé',this)">
+<div class="boisson" onclick="choisirBoisson('Thé', this)">
 🍵 Thé
 </div>
 
 
-<div class="boisson" onclick="selection('Lait',this)">
+<div class="boisson" onclick="choisirBoisson('Lait', this)">
 🥛 Lait
 </div>
 
 
-<button onclick="resume()">
+<button onclick="afficherResume()">
 Voir ma commande
 </button>
 
-
 </div>
-
 
 
 
 <!-- RESUME -->
 
-<div class="card cache" id="resume">
-
+<div class="card cache" id="pageResume">
 
 <h2>📋 Récapitulatif</h2>
 
 
-<div class="resume" id="details"></div>
+<div class="resume" id="resumeCommande"></div>
 
 
-<button onclick="valider()">
+<button onclick="validerCommande()">
 ✅ Confirmer la commande
 </button>
 
 
-<button onclick="retour()">
+<button onclick="modifierCommande()">
 Modifier
 </button>
 
@@ -234,16 +199,13 @@ Modifier
 
 
 
-
 <!-- SUIVI -->
 
-<div class="card cache" id="suivi">
+<div class="card cache" id="pageSuivi">
 
+<h2>☕ Suivi de commande</h2>
 
-<h2>Commande en cours</h2>
-
-
-<h3 id="numero"></h3>
+<h3 id="numeroCommande"></h3>
 
 
 <div class="etape actif">
@@ -251,17 +213,17 @@ Modifier
 </div>
 
 
-<div class="etape">
-🟡 Préparation en cours...
+<div class="etape" id="preparation">
+🟡 Préparation en cours
 </div>
 
 
-<div class="etape">
+<div class="etape" id="pret">
 🟢 Boisson prête
 </div>
 
 
-<p id="message"></p>
+<p id="messageFinal"></p>
 
 
 </div>
@@ -273,73 +235,79 @@ Modifier
 
 <script>
 
+let nomUtilisateur="";
+let prenomUtilisateur="";
+let boissonChoisie="";
 
-let nom="";
-let prenom="";
-let boisson="";
-let numero=Math.floor(Math.random()*900)+100;
-
-
-
-function continuer(){
-
-nom=document.getElementById("nom").value;
-prenom=document.getElementById("prenom").value;
-
-
-if(nom=="" || prenom==""){
-
-alert("Veuillez remplir vos informations");
-
-return;
-
-}
-
-
-document.getElementById("identification").classList.add("cache");
-document.getElementById("choix").classList.remove("cache");
-
-
-}
+let numeroCommande = Math.floor(Math.random()*900)+100;
 
 
 
-function selection(b,e){
+function continuerIdentification(){
 
-boisson=b;
-
-
-document.querySelectorAll(".boisson")
-.forEach(x=>x.classList.remove("active"));
+nomUtilisateur=document.getElementById("nom").value;
+prenomUtilisateur=document.getElementById("prenom").value;
 
 
-e.classList.add("active");
+if(nomUtilisateur==="" || prenomUtilisateur===""){
 
-}
-
-
-
-function resume(){
-
-
-if(boisson==""){
-
-alert("Choisissez une boisson");
+alert("Veuillez remplir votre nom et votre prénom");
 
 return;
 
 }
 
 
-document.getElementById("choix").classList.add("cache");
+document.getElementById("pageIdentification").classList.add("cache");
 
-document.getElementById("resume").classList.remove("cache");
+document.getElementById("pageChoix").classList.remove("cache");
 
 
-document.getElementById("details").innerHTML=
+}
 
-"👤 Client : "+nom+" "+prenom+
-"<br>☕ Boisson : "+boisson+
+
+
+function choisirBoisson(boisson, bouton){
+
+boissonChoisie=boisson;
+
+
+let boutons=document.querySelectorAll(".boisson");
+
+boutons.forEach(function(b){
+
+b.classList.remove("active");
+
+});
+
+
+bouton.classList.add("active");
+
+}
+
+
+
+function afficherResume(){
+
+
+if(boissonChoisie===""){
+
+alert("Veuillez choisir une boisson");
+
+return;
+
+}
+
+
+document.getElementById("pageChoix").classList.add("cache");
+
+document.getElementById("pageResume").classList.remove("cache");
+
+
+document.getElementById("resumeCommande").innerHTML=
+
+"👤 Client : "+nomUtilisateur+" "+prenomUtilisateur+
+"<br>☕ Boisson : "+boissonChoisie+
 "<br>🍬 Sucre : Inclus"+
 "<br>🔥 Température : Chaude";
 
@@ -348,43 +316,46 @@ document.getElementById("details").innerHTML=
 
 
 
-function retour(){
+function modifierCommande(){
 
-document.getElementById("resume").classList.add("cache");
+document.getElementById("pageResume").classList.add("cache");
 
-document.getElementById("choix").classList.remove("cache");
+document.getElementById("pageChoix").classList.remove("cache");
 
 }
 
 
 
-function valider(){
+function validerCommande(){
 
 
-document.getElementById("resume").classList.add("cache");
+document.getElementById("pageResume").classList.add("cache");
 
-document.getElementById("suivi").classList.remove("cache");
-
-
-document.getElementById("numero").innerHTML=
-"Commande #"+numero+" - "+boisson;
+document.getElementById("pageSuivi").classList.remove("cache");
 
 
-setTimeout(()=>{
+document.getElementById("numeroCommande").innerHTML=
 
-document.querySelectorAll(".etape")[1]
+"Commande #"+numeroCommande+" - "+boissonChoisie;
+
+
+
+setTimeout(function(){
+
+document.getElementById("preparation")
 .classList.add("actif");
 
 },3000);
 
 
 
-setTimeout(()=>{
-[16/07/2026 17:23] Célia Nkinda: document.querySelectorAll(".etape")[2]
+setTimeout(function(){
+
+document.getElementById("pret")
 .classList.add("actif");
 
+document.getElementById("messageFinal").innerHTML=
 
-document.getElementById("message").innerHTML=
 "✅ Votre boisson est prête, veuillez la récupérer.";
 
 },7000);
